@@ -33,8 +33,13 @@ def scrape(url):
 	tree = html.fromstring(r.content)
 	# print r.content
 	base = tree.xpath('//div[@class="bd"]')[0]
-	print etree.tostring(base, pretty_print=True)
+	traveller = base.xpath('.//h3[1]/a/strong/a/text()')[0]
+	traveller_slug = base.xpath('.//h3[1]/a/strong/a/@href')[0]
+	description = tree.xpath('//div[@class="bi"]/p')
+	print traveller, traveller_slug, description
+	print etree.tostring(description, pretty_print=True)
 	# print etree.tostring(base, pretty_print=True)
+
 if __name__ == "__main__":
 	# collect("https://mbasic.facebook.com/groups/625191517538301")
-	scrape("https://m.facebook.com/groups/625191517538301?view=permalink&id=973505226040260&refid=18&_ft_#footer_action_list")
+	scrape("https://m.facebook.com/groups/625191517538301?view=permalink&id=973219502735499&refid=18&_ft_=qid.6204099145172029259%3Amf_story_key.973219502735499%3Atl_objid.973219502735499#footer_action_list")
