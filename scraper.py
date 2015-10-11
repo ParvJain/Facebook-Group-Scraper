@@ -32,15 +32,37 @@ def scrape(url):
 	r = requests.get(url, cookies=cookie, verify=False)
 	tree = html.fromstring(r.content)
 	# print r.content
-	base = tree.xpath('//div[@class="bd"]')[0]
+	base = tree.xpath('//div[@class="be"]')[0]
+	bottom = tree.xpath('//div[@class="bv"]')[0]
 	traveller = base.xpath('.//h3[1]/a/strong/a/text()')[0]
 	traveller_slug = base.xpath('.//h3[1]/a/strong/a/@href')[0]
 	description = tree.xpath('//div[@class="bi"]/p')
 
+	helper = bottom.xpath('.//div[contains(@id,"")]')
+	for x in helper:
+		try:
+			if len(x.get('id')) == 15:
+				name = x.xpath('.//h3/a[1]/text()')[0]
+				link = x.xpath('.//h3/a[1]/@href')[0]
+				comment = x.xpath('.//div[1]')[0]
+				c = etree.tostring(comment)
+				try:
+					like = x.xpath('.//a[@aria-label="Like"]/text()')[0]
+				except IndexError:
+					like = str(0)
+				timestamp = x.xpath('.//abbr/text()')[0]
+				
+				# print name, link, like, timestamp
+				# print etree.tostring(x, pretty_print=True)
+
+
+		except TypeError:
+			pass
+
 	descriptions = []
 
 	for p in description:
-		descriptions.append(etree.tostring(p, pretty_print=True))
+		descriptions.append(etree.tostring(p))
 
 	status = "".join(descriptions)
 	timestamp = base.xpath('.//abbr/text()')[0]
@@ -48,7 +70,7 @@ def scrape(url):
 
 	print traveller, traveller_slug, status, timestamp
 	# print etree.tostring(description, pretty_print=True)
-	# print etree.tostring(base, pretty_print=True)
+	# print etree.tostring(bottom, pretty_print=True)
 
 if __name__ == "__main__":
 	# collect("https://mbasic.facebook.com/groups/625191517538301")
